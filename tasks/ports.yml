@@ -105,3 +105,40 @@
     chdir={{ psp_ports_tmp_path }}/psp-ports/libvorbis
   environment:
     PATH: "{{ ansible_env.PATH }}:{{ pspdev_path }}/bin"
+
+- name: Autogen freetype ports
+  shell: "{{ item }} chdir={{ psp_ports_tmp_path }}/psp-ports/freetype/builds/unix"
+  with_items:
+    - 'aclocal -I .'
+    - 'libtoolize --copy'
+    - 'autoconf'
+
+- name: Configure freetype, zziplib ports
+  shell: ./configure --host={{ target }} --prefix={{ psp_prefix }}
+    chdir={{ psp_ports_tmp_path }}/psp-ports/{{ item }}
+  with_items:
+    - freetype
+    - zziplib
+  environment:
+    LDFLAGS: "-L{{ pspsdk_path }}/lib"
+    LIBS: "-lc -lpspuser"
+    PATH: "{{ ansible_env.PATH }}:{{ pspdev_path }}/bin"
+
+- name: Compile freetype, zziplib ports
+  shell: make -j {{ ansible_processor_vcpus }}
+    chdir={{ psp_ports_tmp_path }}/psp-ports/{{ item }}
+  with_items:
+    - freetype
+    - zziplib
+  environment:
+    PATH: "{{ ansible_env.PATH }}:{{ pspdev_path }}/bin"
+
+- name: Install freetype, zziplib ports
+  sudo: yes
+  shell: make -j {{ ansible_processor_vcpus }} install
+    chdir={{ psp_ports_tmp_path }}/psp-ports/{{ item }}
+  with_items:
+    - freetype
+    - zziplib
+  environment:
+    PATH: "{{ ansible_env.PATH }}:{{ pspdev_path }}/bin"
