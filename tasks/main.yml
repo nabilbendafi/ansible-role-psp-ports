@@ -22,3 +22,4 @@
        accept_hostkey=yes
 
 - include: ports.yml
+- include: lua.yml

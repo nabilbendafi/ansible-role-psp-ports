@@ -1,0 +1,12 @@
+- name: Compile lua port
+  shell: make -f Makefile.psp -j {{ ansible_processor_vcpus }}
+    chdir={{ psp_ports_tmp_path }}/psp-ports/lua
+  environment:
+    PATH: "{{ ansible_env.PATH }}:{{ pspdev_path }}/bin"
+
+- name: Install lua port
+  sudo: yes
+  shell: make -f Makefile.psp -j {{ ansible_processor_vcpus }} install
+    chdir={{ psp_ports_tmp_path }}/psp-ports/lua
+  environment:
+    PATH: "{{ ansible_env.PATH }}:{{ pspdev_path }}/bin"
