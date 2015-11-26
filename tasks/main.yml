@@ -24,3 +24,4 @@
 - include: ports.yml
 - include: lua.yml
 - include: sdl.yml
+- include: sqlite.yml

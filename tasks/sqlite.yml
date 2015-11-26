@@ -1,0 +1,21 @@
+- name: Configure sqlite port
+  shell: ./configure --host={{ target }} --prefix={{ psp_prefix }} --disable-readline --disable-tcl
+    chdir={{ psp_ports_tmp_path }}/psp-ports/sqlite
+  environment:
+    LDFLAGS: "-L{{ pspsdk_path }}/lib"
+    LIBS: "-lc -lpspuser"
+    PATH: "{{ ansible_env.PATH }}:{{ pspdev_path }}/bin"
+
+- name: Compile sqlite port
+  shell: make -j {{ ansible_processor_vcpus }}
+    chdir={{ psp_ports_tmp_path }}/psp-ports/sqlite
+  environment:
+    PATH: "{{ ansible_env.PATH }}:{{ pspdev_path }}/bin"
+    PSPDEV: "{{ pspdev_path }}"
+
+- name: Install sqlite port
+  sudo: yes
+  shell: make -j {{ ansible_processor_vcpus }} install
+    chdir={{ psp_ports_tmp_path }}/psp-ports/sqlite
+  environment:
+    PATH: "{{ ansible_env.PATH }}:{{ pspdev_path }}/bin"
