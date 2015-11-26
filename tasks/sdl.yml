@@ -1,0 +1,61 @@
+- name: Autogen for SDL, SDL_gfx, SDL_image, SDL_mixer, SDL_ttf ports
+  shell: ./autogen.sh --host={{ target }} --prefix={{ psp_prefix }}
+    chdir={{ psp_ports_tmp_path }}/psp-ports/{{ item }}
+  with_items:
+    - SDL
+    - SDL_gfx
+    - SDL_image
+    - SDL_mixer
+    - SDL_ttf
+  environment:
+    PATH: "{{ ansible_env.PATH }}:{{ pspdev_path }}/bin"
+
+- name: Configure SDL, SDL_gfx, SDL_image, SDL_mixer, SDL_ttf ports
+  shell: ./configure --host={{ target }} --prefix={{ psp_prefix }} --with-sdl-prefix={{ psp_prefix }} {{ item.options }}
+    chdir={{ psp_ports_tmp_path }}/psp-ports/{{ item.lib }}
+  with_items:
+    - { lib: 'SDL', options: '' }
+    - { lib: 'SDL_gfx', options: '--disable-mmx --disable-shared' }
+    - { lib: 'SDL_image', options: '' }
+    - { lib: 'SDL_mixer', options: '--disable-music-mp3 --disable-music-libmikmod --disable-music-ogg-tremor --enable-music-mod' }
+    - { lib: 'SDL_ttf', options: '--with-freetype-prefix={{ psp_prefix }} --without-x' }
+  environment:
+    LDFLAGS: "-L{{ pspsdk_path }}/lib"
+    LIBS: "-lc -lpspuser"
+    PATH: "{{ ansible_env.PATH }}:{{ pspdev_path }}/bin"
+
+- name: Compile SDL port
+  shell: make -j {{ ansible_processor_vcpus }}
+    chdir={{ psp_ports_tmp_path }}/psp-ports/SDL
+  environment:
+    PATH: "{{ ansible_env.PATH }}:{{ pspdev_path }}/bin"
+
+- name: Install SDL port
+  sudo: yes
+  shell: make -j {{ ansible_processor_vcpus }} install
+    chdir={{ psp_ports_tmp_path }}/psp-ports/SDL
+  environment:
+    PATH: "{{ ansible_env.PATH }}:{{ pspdev_path }}/bin"
+
+- name: Compile SDL_gfx, SDL_image, SDL_mixer, SDL_ttf ports
+  shell: make -j {{ ansible_processor_vcpus }}
+    chdir={{ psp_ports_tmp_path }}/psp-ports/{{ item }}
+  with_items:
+    - SDL_gfx
+    - SDL_image
+    - SDL_mixer
+    - SDL_ttf
+  environment:
+    PATH: "{{ ansible_env.PATH }}:{{ pspdev_path }}/bin"
+
+- name: Install SDL, SDL_gfx, SDL_image, SDL_mixer, SDL_ttf ports
+  sudo: yes
+  shell: make -j {{ ansible_processor_vcpus }} install
+    chdir={{ psp_ports_tmp_path }}/psp-ports/{{ item }}
+  with_items:
+    - SDL_gfx
+    - SDL_image
+    - SDL_mixer
+    - SDL_ttf
+  environment:
+    PATH: "{{ ansible_env.PATH }}:{{ pspdev_path }}/bin"
