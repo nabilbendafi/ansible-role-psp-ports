@@ -20,3 +20,24 @@
     - 'libbulletml/src'
     - libmad
     - zlib
+
+- name: Compile libpspvram, pspirkeyb, pspgl ports
+  shell: make -j {{ ansible_processor_vcpus }}
+    chdir={{ psp_ports_tmp_path }}/psp-ports/{{ item }}
+  environment:
+    PATH: "{{ ansible_env.PATH }}:{{ pspdev_path }}/bin"
+  with_items:
+    - libpspvram
+    - pspirkeyb
+    - pspgl
+
+- name: Compile libpspvram, pspirkeyb, pspgl ports
+  sudo: yes
+  shell: make -j {{ ansible_processor_vcpus }} install
+    chdir={{ psp_ports_tmp_path }}/psp-ports/{{ item }}
+  environment:
+    PATH: "{{ ansible_env.PATH }}:{{ pspdev_path }}/bin"
+  with_items:
+    - libpspvram
+    - pspirkeyb
+    - pspgl
