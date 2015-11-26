@@ -1,0 +1,22 @@
+- name: Compile jpeg, libbulletml, libmad, zlib ports
+  shell: make -j {{ ansible_processor_vcpus }}
+    chdir={{ psp_ports_tmp_path }}/psp-ports/{{ item }}
+  environment:
+    PATH: "{{ ansible_env.PATH }}:{{ pspdev_path }}/bin"
+  with_items:
+    - jpeg
+    - 'libbulletml/src'
+    - libmad
+    - zlib
+
+- name: Install jpeg, libbulletml, libmad, zlib ports
+  sudo: yes
+  shell: make -j {{ ansible_processor_vcpus }} install
+    chdir={{ psp_ports_tmp_path }}/psp-ports/{{ item }}
+  environment:
+    PATH: "{{ ansible_env.PATH }}:{{ pspdev_path }}/bin"
+  with_items:
+    - jpeg
+    - 'libbulletml/src'
+    - libmad
+    - zlib

@@ -20,3 +20,5 @@
   git: repo=git://github.com/pspdev/psp-ports
        dest={{ psp_ports_tmp_path }}/psp-ports
        accept_hostkey=yes
+
+- include: ports.yml
