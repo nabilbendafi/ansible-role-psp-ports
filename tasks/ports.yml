@@ -41,3 +41,16 @@
     - libpspvram
     - pspirkeyb
     - pspgl
+
+- name: Compile libpng port
+  shell: make -j {{ ansible_processor_vcpus }}
+    chdir={{ psp_ports_tmp_path }}/psp-ports/libpng
+  environment:
+    PATH: "{{ ansible_env.PATH }}:{{ pspdev_path }}/bin"
+
+- name: Install libpng port
+  sudo: yes
+  shell: make -j {{ ansible_processor_vcpus }} install
+    chdir={{ psp_ports_tmp_path }}/psp-ports/libpng
+  environment:
+    PATH: "{{ ansible_env.PATH }}:{{ pspdev_path }}/bin"
