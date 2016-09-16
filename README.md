@@ -9,7 +9,7 @@ Installation
 ------------
 
 ```
-$ ansible-galaxy install nabilbendafi.ansible-role-psp-ports 
+$ ansible-galaxy install nabilbendafi.psp-ports
 ```
 
 ```
